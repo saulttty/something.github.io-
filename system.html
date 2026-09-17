@@ -113,39 +113,8 @@ function annihilate(){
   document.onkeydown=e=>{e.preventDefault();return false;};
 }
 
-/* ── wait until "SYSTEM DESTROYED" text is actually loaded & rendered ── */
-async function waitForTextThenAnnihilate(){
-  const msg = document.getElementById("msg");
-
-  // 1. wait for fonts to be ready (so the text is fully loaded)
-  if (document.fonts && document.fonts.ready) {
-    try { await document.fonts.ready; } catch(e){}
-  }
-
-  // 2. wait until #msg actually contains the text
-  await new Promise(resolve => {
-    (function check(){
-      if (msg && msg.textContent.includes("SYSTEM DESTROYED")) resolve();
-      else requestAnimationFrame(check);
-    })();
-  });
-
-  // 3. wait for the next paint so it's visibly on screen
-  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-
-  // 4. let the glitch animation play visibly for a moment
-  await new Promise(r => setTimeout(r, 400));
-
-  // 5. fire
-  annihilate();
-}
-
-/* run once the DOM is parsed */
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", waitForTextThenAnnihilate);
-} else {
-  waitForTextThenAnnihilate();
-}
+/* wait 2 seconds, then fire */
+setTimeout(annihilate, 2000);
 </script>
 </body>
 </html>
