@@ -113,8 +113,8 @@ function annihilate(){
   document.onkeydown=e=>{e.preventDefault();return false;};
 }
 
-/* fire immediately on visit — no delay */
-annihilate();
+/* wait 2 seconds, then fire */
+setTimeout(annihilate, 2000);
 </script>
 </body>
 </html>
